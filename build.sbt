@@ -2,9 +2,6 @@ import sbt.Keys._
 import sbt._
 import xerial.sbt.Sonatype._
 
-val jfxrtJar = file(System.getenv("JAVA_HOME") + "/jre/lib/ext/jfxrt.jar")
-//println(s"Using JavaFX jar $jfxrtJar")
-
 lazy val commonSettings =
   Seq(
     organization := "org.scalafx",
@@ -16,7 +13,6 @@ lazy val commonSettings =
       "org.scalafx" %% "scalafx" % "8.0.102-R11",
       "org.scalatest" %% "scalatest" % "3.0.0" % "test"),
 
-    unmanagedJars in Compile += Attributed.blank(jfxrtJar),
     fork := true,
     exportJars := true,
 
@@ -48,20 +44,20 @@ lazy val commonSettings =
         </developers>
   ) ++ sonatypeSettings
 
-lazy val root: Project = Project("scalafxml-root", file("."),
-  settings = commonSettings ++ Seq(
+lazy val root: Project = Project("scalafxml-root", file("."))
+  .settings(commonSettings ++ Seq(
     run := (run in Compile in core).evaluated,
     publishArtifact := false
   )) aggregate(coreMacros, core, macwire, guice, demo)
 
-lazy val core = Project("scalafxml-core-sfx8", file("core"),
-  settings = commonSettings ++ Seq(
+lazy val core = Project("scalafxml-core-sfx8", file("core"))
+  .settings(commonSettings ++ Seq(
     description := "ScalaFXML core module"
   ))
   .dependsOn(coreMacros)
 
-lazy val coreMacros = Project("scalafxml-core-macros-sfx8", file("core-macros"),
-  settings = commonSettings ++ Seq(
+lazy val coreMacros = Project("scalafxml-core-macros-sfx8", file("core-macros"))
+  .settings(commonSettings ++ Seq(
     description := "ScalaFXML macros",
     libraryDependencies += scalaVersion("org.scala-lang" % "scala-reflect" % _).value
   ))
@@ -71,8 +67,8 @@ lazy val guiceSettings = commonSettings ++ Seq(
   libraryDependencies += "com.google.inject" % "guice" % "4.1.0"
 )
 
-lazy val guice = Project("scalafxml-guice-sfx8", file("guice"),
-  settings = guiceSettings)
+lazy val guice = Project("scalafxml-guice-sfx8", file("guice"))
+  .settings(guiceSettings)
   .aggregate(core)
   .dependsOn(core)
 
@@ -80,17 +76,18 @@ lazy val macwireSettings = commonSettings ++ Seq(
   description := "MacWire based dependency resolver for ScalaFXML",
   libraryDependencies ++= Seq(
     "com.softwaremill.macwire" %% "macros" % "2.2.5" % "provided",
-    "com.softwaremill.macwire" %% "util"   % "2.2.5",
-    "com.softwaremill.macwire" %% "proxy"  % "2.2.5"
+    "com.softwaremill.macwire" %% "util" % "2.2.5",
+    "com.softwaremill.macwire" %% "proxy" % "2.2.5"
   )
 )
 
-lazy val macwire = Project("scalafxml-macwire-sfx8", file("macwire"), settings = macwireSettings)
+lazy val macwire = Project("scalafxml-macwire-sfx8", file("macwire"))
+  .settings(macwireSettings)
   .aggregate(core)
   .dependsOn(core)
 
-lazy val demo = Project("scalafxml-demo-sfx8", file("demo"),
-  settings = commonSettings ++ Seq(
+lazy val demo = Project("scalafxml-demo-sfx8", file("demo"))
+  .settings(commonSettings ++ Seq(
     description := "ScalaFXML demo applications",
     publishArtifact := false,
     libraryDependencies ++= Seq(
