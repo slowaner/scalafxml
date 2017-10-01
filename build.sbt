@@ -10,7 +10,6 @@ lazy val commonSettings =
     organization := "org.scalafx",
     version := "0.4",
     crossScalaVersions := Seq("2.11.8", "2.12.2"),
-    scalaVersion := crossScalaVersions { versions => versions.head }.value,
     scalacOptions ++= Seq("-deprecation"),
     resolvers += Resolver.sonatypeRepo("releases"),
     libraryDependencies ++= Seq(
